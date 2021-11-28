@@ -3,84 +3,120 @@ version: '3.4'
 services:
   catalogdb:
     image: mongo
+    networks:
+      - asp_run
 
   basketdb:
     image: redis:alpine
+    networks:
+      - asp_run
 
   discountdb:
     image: postgres
+    networks:
+      - asp_run
 
   orderdb:
     image: mcr.microsoft.com/mssql/server:2017-latest
+    networks:
+      - asp_run
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    networks:
+      - asp_run
 
   pgadmin:
-    image: dpage/pgadmin4  
+    image: dpage/pgadmin4
+    networks:
+      - asp_run
 
   portainer:
     image: portainer/portainer-ce
+    networks:
+      - asp_run
 
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     build:
       context: .
       dockerfile: Services/Catalog/Catalog.API/Dockerfile
+    networks:
+      - asp_run
 
   basket.api:
     image: ${DOCKER_REGISTRY-}basketapi
     build:
       context: .
       dockerfile: Services/Basket/Basket.API/Dockerfile
+    networks:
+      - asp_run
 
   discount.api:
     image: ${DOCKER_REGISTRY-}discountapi
     build:
       context: .
       dockerfile: Services/Discount/Discount.API/Dockerfile
+    networks:
+      - asp_run
 
   discount.grpc:
     image: ${DOCKER_REGISTRY-}discountgrpc
     build:
       context: .
       dockerfile: Services/Discount/Discount.Grpc/Dockerfile
+    networks:
+      - asp_run
 
   ordering.api:
     image: ${DOCKER_REGISTRY-}orderingapi
     build:
       context: .
       dockerfile: Services/Ordering/Ordering.API/Dockerfile
+    networks:
+      - asp_run
 
   ocelotapigw:
     image: ${DOCKER_REGISTRY-}ocelotapigw
     build:
       context: .
-      dockerfile: ApiGateways/OcelotApiGw/Dockerfile  
+      dockerfile: ApiGateways/OcelotApiGw/Dockerfile
+    networks:
+      - asp_run
 
   shopping.aggregator:
     image: ${DOCKER_REGISTRY-}shoppingaggregator
     build:
       context: .
       dockerfile: ApiGateways/Shopping.Aggregator/Dockerfile
+    networks:
+      - asp_run
 
   aspnetrunbasics:
     image: ${DOCKER_REGISTRY-}aspnetrunbasics
     build:
       context: .
       dockerfile: WebApps/AspnetRunBasics/Dockerfile
+    networks:
+      - asp_run
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    image: elasticsearch:7.9.2
+    networks:
+      - asp_run
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.2
+    image: kibana:7.9.2
+    networks:
+      - asp_run
 
   webstatus:
     image: ${DOCKER_REGISTRY-}webstatus
     build:
       context: .
       dockerfile: WebApps/WebStatus/Dockerfile
+    networks:
+      - asp_run
 
 volumes:
   mongo_data:
@@ -88,3 +124,6 @@ volumes:
   postgres_data:
   pgadmin_data:
   elasticsearch-data:
+
+networks:
+  asp_run:
